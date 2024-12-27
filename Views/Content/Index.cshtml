@@ -1,0 +1,36 @@
+﻿@model IEnumerable<AwarenessWebsite.Models.Content>
+@{
+    Layout = "_Dashboard";
+}
+<h2>Contents</h2>
+<a asp-action="Create" class="btn btn-primary mb-3">Create New</a>
+
+
+
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var content in Model)
+            {
+                <tr>
+                    <td>@content.Title</td>
+                    <td>@content.TargetAgeGroup</td>
+                    <td>@content.Category?.Name</td> <!-- Display the Category Name -->
+                    <td>
+                        <a href="@Url.Action("Edit", "Content", new { id = content.Id })" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="@Url.Action("Delete", "Content", new { id = content.Id })" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

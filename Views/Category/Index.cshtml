@@ -1,0 +1,37 @@
+﻿@model IEnumerable<AwarenessWebsite.Models.Category>
+@{
+    Layout = "_Content";
+}
+<section class="service_section">
+    <div class="container">
+        <div class="heading_container">
+            <h2>
+                At Our Topic
+            </h2>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            @foreach (var category in Model)
+            {
+                <div class="col-sm-12 col-md-6">
+                    <div class="box align-items-end align-items-md-start text-right text-md-left">
+                        <div class="img-box">
+                            <img src="@category.ImagePath" alt="@category.Name">
+                        </div>
+                        <h4>
+                            @category.Name
+                        </h4>
+                        <p>
+                            @category.Description
+                        </p>
+                        <a href="/Content/CategoryContent?categoryId=@category.Id" >Read More</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+
