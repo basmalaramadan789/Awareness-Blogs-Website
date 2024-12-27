@@ -16,25 +16,12 @@ public class ContentController : Controller
         _webHostEnvironment = webHostEnvironment;
     }
 
-    //public IActionResult CategoryContent(int categoryId)
-    //{
-    //    // Fetch content for the given categoryId
-    //    var content = _dbContext.Contents
-    //        .Where(c => c.CategoryId == categoryId)
-    //        .ToList();
-
-    //    if (content == null || !content.Any())
-    //    {
-    //        return NotFound("No content found for this category.");
-    //    }
-
-    //    return View(content); // Pass content to the view
-    //}
+   
 
     public IActionResult CategoryContent(int categoryId)
     {
         var content = _dbContext.Contents
-            .Include(c => c.Category) // Load the associated Category data
+            .Include(c => c.Category) 
             .Where(c => c.CategoryId == categoryId)
             .ToList();
 
@@ -69,7 +56,7 @@ public class ContentController : Controller
     }
 
 
-    // GET: Contents/Create
+    
     public IActionResult Create()
     {
         var categories = _dbContext.Categories
@@ -80,23 +67,23 @@ public class ContentController : Controller
         return View();
     }
 
-    // POST: Contents/Create
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Content content, IFormFile ImageFile)
     {
-        // Populate categories again if ModelState is invalid
+       
         ViewBag.Categories = new SelectList(_dbContext.Categories, "Id", "Name");
         if (ImageFile != null)
         {
-            // Ensure the 'images/content' folder exists
+            
             string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/content");
             if (!Directory.Exists(folderPath))
             {
                 Directory.CreateDirectory(folderPath);
             }
 
-            // Save the file in the 'images/content' folder
+            
             string fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
             string uploadPath = Path.Combine(folderPath, fileName);
             using (var fileStream = new FileStream(uploadPath, FileMode.Create))
@@ -104,7 +91,7 @@ public class ContentController : Controller
                 ImageFile.CopyTo(fileStream);
             }
 
-            // Store the relative path in the database
+           
             content.ImagePath = "/images/content/" + fileName;
         }
         ModelState.Remove("Category");
@@ -115,7 +102,7 @@ public class ContentController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        // Reload categories if model state is invalid
+        
         var categories = _dbContext.Categories
             .Select(c => new { c.Id, c.Name })
             .ToList();
@@ -136,7 +123,7 @@ public class ContentController : Controller
         }
 
         var content = await _dbContext.Contents
-            .Include(c => c.Category)  // Ensure you include the Category if needed
+            .Include(c => c.Category)  
             .FirstOrDefaultAsync(m => m.Id == id);
 
         if (content == null)
@@ -147,7 +134,7 @@ public class ContentController : Controller
         return View(content);
     }
 
-    // POST: Content/Delete/5
+  
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
@@ -166,17 +153,17 @@ public class ContentController : Controller
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
-        // Fetch the content by ID, including related entities if necessary
+        
         var content = await _dbContext.Contents
-            .Include(c => c.Category) // Include the Category if needed
+            .Include(c => c.Category) 
             .FirstOrDefaultAsync(c => c.Id == id);
 
         if (content == null)
         {
-            return NotFound(); // Return 404 if content is not found
+            return NotFound(); 
         }
 
-        // Prepare dropdowns and multi-select lists
+        
         ViewBag.Categories = new SelectList(_dbContext.Categories, "Id", "Name", content.CategoryId);
         
         return View(content);
@@ -186,53 +173,53 @@ public class ContentController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditContent(int id, Content model, IFormFile ImageFile)
     {
-        // Fetch the existing content from the database
+        
         var content = await _dbContext.Contents
             .FirstOrDefaultAsync(c => c.Id == id);
 
         if (content == null)
         {
-            return NotFound(); // Return 404 if content is not found
+            return NotFound(); 
         }
 
-        // Update the content properties
+       
         content.Title = model.Title;
         content.Description = model.Description;
         content.CategoryId = model.CategoryId;
         content.TargetAgeGroup = model.TargetAgeGroup;
         content.Tags = model.Tags;
 
-        // Handle image upload
+    
         if (ImageFile != null && ImageFile.Length > 0)
         {
-            // Define the upload path
+            
             string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "content");
 
-            // Create the directory if it doesn't exist
+            
             if (!Directory.Exists(uploadPath))
             {
                 Directory.CreateDirectory(uploadPath);
             }
 
-            // Generate a unique file name
+           
             string fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
             string filePath = Path.Combine(uploadPath, fileName);
 
-            // Save the file to the server
+            
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await ImageFile.CopyToAsync(fileStream);
             }
 
-            // Update the ImagePath property
+            
             content.ImagePath = Path.Combine("images", "contents", fileName).Replace("\\", "/");
         }
 
-        // Save changes to the database
+        
         _dbContext.Contents.Update(content);
         await _dbContext.SaveChangesAsync();
 
-        // Redirect to a relevant action (e.g., Index or Details)
+        
         return RedirectToAction(nameof(Index));
     }
 }

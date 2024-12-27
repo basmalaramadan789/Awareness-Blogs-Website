@@ -1,4 +1,6 @@
-﻿namespace AwarenessWebsite.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AwarenessWebsite.Models;
 
 public class Category
 {
@@ -9,4 +11,6 @@ public class Category
 
   
     public ICollection<Content>? Contents { get; set; }
+    [NotMapped]
+    public double AverageRating { get; set; }
 }

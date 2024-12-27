@@ -24,6 +24,7 @@ public class CategoryController : Controller
 
 
 
+
     public async Task<IActionResult> GetAll()
     {
         var categories = await _context.Categories.ToListAsync();

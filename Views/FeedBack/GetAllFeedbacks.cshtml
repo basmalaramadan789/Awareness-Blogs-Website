@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Feedback>
+
+@{
+    ViewData["Title"] = "All Feedbacks";
+    Layout = "_Dashboard";
+}
+
+<div class="container">
+    <h2>@ViewData["Title"]</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Content</th>
+                <th>User</th>
+                <th>Comments</th>
+                <th>Rating</th>
+                <th>Submitted At</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var feedback in Model)
+            {
+                <tr>
+                    <td>@feedback.Content?.Title</td>
+                    <td>@feedback.ApplicationUser?.UserName</td>
+                    <td>@feedback.Comments</td>
+                    <td>@feedback.Rating</td>
+                    <td>@feedback.SubmittedAt</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
